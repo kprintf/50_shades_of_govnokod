@@ -13,6 +13,7 @@ vector<map<int, int> > Requests; //[1]th endpoint want [3] copies of [2]video
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(0);
+	srand( time(0) );
 	cin >> V >> E >> R >> C >> X;
 	S.resize(V);
 	L_d.resize(E);
@@ -22,13 +23,21 @@ int main() {
 		cin >> L_d[endp] >> K;
 		while(K --> 0) {
 			cin >> c >> L_c;
-			if (L_c < L_d[endp]) {
-				Latency[c][endp] = L_c;
-			}
+			Latency[c][endp] = L_c;
 		}
 	}
 	for(int i = 0, a, b, c; i < R; cin >> a >> b >> c, Requests[b][a]+=c, i++);
-
+	set<int> servers_used;
+	while (servers_used.size() < C){
+		int server = rand() % C;
+		if (servers_used.find(server) != servers_used.end()){
+			serveers_used.insert(server);
+			vector <long long> files(V, 0);
+			for(auto ep: Latency[server]){
+				
+			}
+		}
+	}
 	return 0;
 }
 
