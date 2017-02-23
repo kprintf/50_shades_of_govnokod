@@ -58,7 +58,7 @@ int main() {
 	}	
 	/////////////////
 	int ans_sz = 0;
-	for(size_t i = 0 ; i < cached.size(); ans_sz = !cached[i++].empty());
+	for(size_t i = 0 ; i < cached.size(); ans_sz += !cached[i++].empty());
 	cout << ans_sz << '\n';
 	for(size_t i = 0 ; i < cached.size(); i++) {
 		if(!cached[i].empty()) {
