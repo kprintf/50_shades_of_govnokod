@@ -12,11 +12,24 @@ vector<map<int, int> > Requests; //[1]th endpoint want [3] copies of [2]video
 vector<int> FreeSpace;
 vector<set<int> > cached;
 
-inline bool is_cached(set<int> &cacheset, int vid) {
+inline bool is_cached(vector<int> &cacheset, int vid) {
 	for(int cache: cacheset)
 		if(cached[cache].count(vid))
 			return true;
 	return false;
+}
+
+#define MAGIC 2
+
+inline void sort_nearest(vector<int> &cacheset, int ep) {
+	struct {
+		int point_of_view;
+		bool operator () (const int& a, const int &b) {
+			return Latency[point_of_view][a] < Latency[point_of_view][b];
+		}
+	} yoba_comparator;
+	yoba_comparator.point_of_view = ep;
+	sort(cacheset.begin(), cacheset.end(), yoba_comparator);
 }
 
 int main() {
@@ -39,17 +52,29 @@ int main() {
 	for(int i = 0, a, b, c; i < R; cin >> a >> b >> c, Requests[b][a]+=c, i++);
 	/////////////////
 	for(size_t i = 0; i < Requests.size(); i++) {
-		set<int> caches;
+		vector<int> caches;
 		for(auto x: Latency[i])
 			if(x.second < L_d[i])
-				caches.insert(x.first);
+				caches.push_back(x.first);
+		sort_nearest(caches, i);
+		set<pair<int, int> > vids;
+		unsigned int candidates_sum_weight = 0;
 		for(map<int,int>::iterator vid = Requests[i].begin();
 				vid != Requests[i].end(); vid++) {
-			if(!is_cached(caches, vid->first)) {
+			vids.insert(make_pair(vid->second, vid->first));
+			candidates_sum_weight += S[vid->first];
+			if(candidates_sum_weight > caches.size() * X * MAGIC) {
+				candidates_sum_weight -= S[vids.begin()->second];
+				vids.erase(vids.begin());
+			}
+		}
+		for(set<pair<int,int> >::iterator vid = vids.begin();
+				vid != vids.end(); vid++) {
+			if(!is_cached(caches, vid->second)) {
 				for(int c: caches) {
-					if(FreeSpace[c] >= S[vid->first]) {
-						FreeSpace[c] -= S[vid->first];
-						cached[c].insert(vid->first);
+					if(FreeSpace[c] >= S[vid->second]) {
+						FreeSpace[c] -= S[vid->second];
+						cached[c].insert(vid->second);
 						break;
 					}
 				}
