@@ -22,7 +22,9 @@ int main() {
 		cin >> L_d[endp] >> K;
 		while(K --> 0) {
 			cin >> c >> L_c;
-			Latency[c][endp] = L_c;
+			if (L_c < L_d[endp]) {
+				Latency[c][endp] = L_c;
+			}
 		}
 	}
 	for(int i = 0, a, b, c; i < R; cin >> a >> b >> c, Requests[b][a]+=c, i++);
