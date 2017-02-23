@@ -7,7 +7,7 @@ int32_t V, // number of videos
 	X; // capacity of each cache server in MB
 vector<int32_t> S; // S[i] is size of i-th video
 vector<int32_t> L_d; // latency from data center to [1]endpoint
-map<int, map<int, int> > Latency; // from [1]endpoint to [2]cache server
+map<int, map<int, int> > Latency; // from [2]endpoint to [1]cache server
 vector<map<int, int> > Requests; //[1]th endpoint want [3] copies of [2]video
 
 int main() {
@@ -22,10 +22,11 @@ int main() {
 		cin >> L_d[endp] >> K;
 		while(K --> 0) {
 			cin >> c >> L_c;
-			Latency[endp][c] = L_c;
+			Latency[c][endp] = L_c;
 		}
 	}
 	for(int i = 0, a, b, c; i < R; cin >> a >> b >> c, Requests[b][a]+=c, i++);
+
 	return 0;
 }
 
